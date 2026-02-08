@@ -538,7 +538,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 23;
-				DEVELOPMENT_TEAM = 26ZKW6U635;
+				DEVELOPMENT_TEAM = "";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"COCOAPODS=1",
@@ -556,7 +556,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MARKETING_VERSION = 1.10;
-				PRODUCT_BUNDLE_IDENTIFIER = com.yonilevy.mutejack;
+				PRODUCT_BUNDLE_IDENTIFIER = com.chaoranli.automute;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -571,7 +571,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 23;
-				DEVELOPMENT_TEAM = 26ZKW6U635;
+				DEVELOPMENT_TEAM = "";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"COCOAPODS=1",
@@ -589,7 +589,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MARKETING_VERSION = 1.10;
-				PRODUCT_BUNDLE_IDENTIFIER = com.yonilevy.mutejack;
+				PRODUCT_BUNDLE_IDENTIFIER = com.chaoranli.automute;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -602,7 +602,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 3;
-				DEVELOPMENT_TEAM = 26ZKW6U635;
+				DEVELOPMENT_TEAM = "";
 				HEADER_SEARCH_PATHS = "\"${SRCROOT}\"/common";
 				INFOPLIST_FILE = "AutoMute Helper/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -611,7 +611,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MARKETING_VERSION = 1.2;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.yonilevy.Mutejack-Helper";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.chaoranli.automute.helper";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -625,7 +625,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 3;
-				DEVELOPMENT_TEAM = 26ZKW6U635;
+				DEVELOPMENT_TEAM = "";
 				HEADER_SEARCH_PATHS = "\"${SRCROOT}\"/common";
 				INFOPLIST_FILE = "AutoMute Helper/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -634,7 +634,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MARKETING_VERSION = 1.2;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.yonilevy.Mutejack-Helper";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.chaoranli.automute.helper";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
