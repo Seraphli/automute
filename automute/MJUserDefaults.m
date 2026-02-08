@@ -10,6 +10,9 @@ static NSString *const MUTE_ON_LOCK = @"MUTE_ON_LOCK";
 static NSString *const MUTE_ON_HEADPHONES = @"MUTE_ON_HEADPHONES";
 static NSString *const MUTE_NOTIFICATIONS_ENABLED = @"MUTE_NOTIFICATIONS_ENABLED";
 static NSString *const MENU_BAR_ICON_HIDDEN = @"MENU_BAR_ICON_HIDDEN";
+static NSString *const RESTORE_ON_WAKE = @"RESTORE_ON_WAKE";
+static NSString *const RESTORE_ON_UNLOCK = @"RESTORE_ON_UNLOCK";
+static NSString *const RESTORE_ON_HEADPHONES = @"RESTORE_ON_HEADPHONES";
 
 @interface MJUserDefaults ()
 @property(nonatomic, strong) NSUserDefaults *defaults;
@@ -38,6 +41,9 @@ static NSString *const MENU_BAR_ICON_HIDDEN = @"MENU_BAR_ICON_HIDDEN";
             MUTE_ON_HEADPHONES: @(YES),
             MUTE_NOTIFICATIONS_ENABLED: @(YES),
             MENU_BAR_ICON_HIDDEN: @(NO),
+            RESTORE_ON_WAKE: @(NO),
+            RESTORE_ON_UNLOCK: @(NO),
+            RESTORE_ON_HEADPHONES: @(NO),
     }];
 
 
@@ -140,6 +146,39 @@ static NSString *const MENU_BAR_ICON_HIDDEN = @"MENU_BAR_ICON_HIDDEN";
 - (void)setMenuBarIconHidden:(BOOL)menuBarIconHidden
 {
     [self.defaults setBool:menuBarIconHidden forKey:MENU_BAR_ICON_HIDDEN];
+    [self.defaults synchronize];
+}
+
+- (BOOL)isSetToRestoreOnWake
+{
+    return [self.defaults boolForKey:RESTORE_ON_WAKE];
+}
+
+- (void)setRestoreOnWake:(BOOL)restoreOnWake
+{
+    [self.defaults setBool:restoreOnWake forKey:RESTORE_ON_WAKE];
+    [self.defaults synchronize];
+}
+
+- (BOOL)isSetToRestoreOnUnlock
+{
+    return [self.defaults boolForKey:RESTORE_ON_UNLOCK];
+}
+
+- (void)setRestoreOnUnlock:(BOOL)restoreOnUnlock
+{
+    [self.defaults setBool:restoreOnUnlock forKey:RESTORE_ON_UNLOCK];
+    [self.defaults synchronize];
+}
+
+- (BOOL)isSetToRestoreOnHeadphones
+{
+    return [self.defaults boolForKey:RESTORE_ON_HEADPHONES];
+}
+
+- (void)setRestoreOnHeadphones:(BOOL)restoreOnHeadphones
+{
+    [self.defaults setBool:restoreOnHeadphones forKey:RESTORE_ON_HEADPHONES];
     [self.defaults synchronize];
 }
 

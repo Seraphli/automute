@@ -31,4 +31,11 @@
 
 - (BOOL)isMenuBarIconHidden;
 - (void)setMenuBarIconHidden:(BOOL)menuBarIconHidden;
+
+- (BOOL)isSetToRestoreOnWake;
+- (void)setRestoreOnWake:(BOOL)restoreOnWake;
+- (BOOL)isSetToRestoreOnUnlock;
+- (void)setRestoreOnUnlock:(BOOL)restoreOnUnlock;
+- (BOOL)isSetToRestoreOnHeadphones;
+- (void)setRestoreOnHeadphones:(BOOL)restoreOnHeadphones;
 @end

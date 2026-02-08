@@ -15,6 +15,12 @@
 - (void)menuBarController_setMuteOnHeadphones:(BOOL)muteOnHeadphones;
 - (void)menuBarController_toggleMuteNotifications;
 - (void)menuBarController_toggleHideMenuBarIcon;
+- (BOOL)menuBarController_isSetToRestoreOnWake;
+- (void)menuBarController_setRestoreOnWake:(BOOL)restoreOnWake;
+- (BOOL)menuBarController_isSetToRestoreOnUnlock;
+- (void)menuBarController_setRestoreOnUnlock:(BOOL)restoreOnUnlock;
+- (BOOL)menuBarController_isSetToRestoreOnHeadphones;
+- (void)menuBarController_setRestoreOnHeadphones:(BOOL)restoreOnHeadphones;
 @end
 
 

@@ -13,6 +13,9 @@ static const NSInteger MENU_ITEM_MUTE_ON_HEADPHONES = 105;
 static const NSInteger MENU_ITEM_MUTE_NOTIFICATIONS = 106;
 static const NSInteger MENU_ITEM_MUTE_ON_LOCK = 107;
 static const NSInteger MENU_ITEM_HIDE_MENU_BAR_ICON = 108;
+static const NSInteger MENU_ITEM_RESTORE_ON_WAKE = 109;
+static const NSInteger MENU_ITEM_RESTORE_ON_UNLOCK = 110;
+static const NSInteger MENU_ITEM_RESTORE_ON_HEADPHONES = 111;
 
 static const NSInteger MENU_ITEM_DISABLE_1H = 201;
 static const NSInteger MENU_ITEM_DISABLE_6H = 202;
@@ -64,6 +67,13 @@ static const NSInteger MENU_ITEM_DISABLE_FOREVER = 205;
     [muteOnSubmenu addItem:[self buildMenuItemWithTitle:@"Headphones Disconnected" action:@selector(muteOnHeadphonesToggled) tag:MENU_ITEM_MUTE_ON_HEADPHONES]];
     triggersItem.submenu = muteOnSubmenu;
     [menu addItem:triggersItem];
+    NSMenuItem *restoreItem = [self buildMenuItemWithTitle:@"Restore Triggers" action:nil];
+    NSMenu *restoreSubmenu = [[NSMenu alloc] init];
+    [restoreSubmenu addItem:[self buildMenuItemWithTitle:@"Mac Wakes Up" action:@selector(restoreOnWakeToggled) tag:MENU_ITEM_RESTORE_ON_WAKE]];
+    [restoreSubmenu addItem:[self buildMenuItemWithTitle:@"Mac Gets Unlocked / Screen Saver Ends" action:@selector(restoreOnUnlockToggled) tag:MENU_ITEM_RESTORE_ON_UNLOCK]];
+    [restoreSubmenu addItem:[self buildMenuItemWithTitle:@"Headphones Connected" action:@selector(restoreOnHeadphonesToggled) tag:MENU_ITEM_RESTORE_ON_HEADPHONES]];
+    restoreItem.submenu = restoreSubmenu;
+    [menu addItem:restoreItem];
     [menu addItem:[self buildMenuItemWithTitle:@"Show Notifications" action:@selector(muteNotificationsToggled) tag:MENU_ITEM_MUTE_NOTIFICATIONS]];
     [menu addItem:[NSMenuItem separatorItem]];
     [menu addItem:[self buildMenuItemWithTitle:@"Enable" action:@selector(enableMute) tag:MENU_ITEM_ENABLE_MUTING]];
@@ -159,6 +169,21 @@ static const NSInteger MENU_ITEM_DISABLE_FOREVER = 205;
     [self.delegate menuBarController_setMuteOnHeadphones:![self.delegate menuBarController_isSetToMuteOnHeadphones]];
 }
 
+- (void)restoreOnWakeToggled
+{
+    [self.delegate menuBarController_setRestoreOnWake:![self.delegate menuBarController_isSetToRestoreOnWake]];
+}
+
+- (void)restoreOnUnlockToggled
+{
+    [self.delegate menuBarController_setRestoreOnUnlock:![self.delegate menuBarController_isSetToRestoreOnUnlock]];
+}
+
+- (void)restoreOnHeadphonesToggled
+{
+    [self.delegate menuBarController_setRestoreOnHeadphones:![self.delegate menuBarController_isSetToRestoreOnHeadphones]];
+}
+
 - (void)launchAtLoginToggled
 {
     [self.delegate menuBarController_setLaunchAtLogin:![self.delegate menuBarController_isSetToLaunchAtLogin]];
@@ -249,6 +274,15 @@ static const NSInteger MENU_ITEM_DISABLE_FOREVER = 205;
     }
     if (menuItem.tag == MENU_ITEM_MUTE_ON_HEADPHONES) {
         menuItem.state = [self.delegate menuBarController_isSetToMuteOnHeadphones] ? NSOnState : NSOffState;
+    }
+    if (menuItem.tag == MENU_ITEM_RESTORE_ON_WAKE) {
+        menuItem.state = [self.delegate menuBarController_isSetToRestoreOnWake] ? NSOnState : NSOffState;
+    }
+    if (menuItem.tag == MENU_ITEM_RESTORE_ON_UNLOCK) {
+        menuItem.state = [self.delegate menuBarController_isSetToRestoreOnUnlock] ? NSOnState : NSOffState;
+    }
+    if (menuItem.tag == MENU_ITEM_RESTORE_ON_HEADPHONES) {
+        menuItem.state = [self.delegate menuBarController_isSetToRestoreOnHeadphones] ? NSOnState : NSOffState;
     }
 
     return YES;

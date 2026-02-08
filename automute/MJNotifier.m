@@ -32,6 +32,21 @@
     [self showNotificationWithTitle:@"Unlocked" body:@"Sound Muted."];
 }
 
+- (void)showWakeRestoreNotification
+{
+    [self showNotificationWithTitle:@"Woke up from sleep" body:@"Volume Restored."];
+}
+
+- (void)showUnlockRestoreNotification
+{
+    [self showNotificationWithTitle:@"Unlocked" body:@"Volume Restored."];
+}
+
+- (void)showHeadphonesConnectedRestoreNotification
+{
+    [self showNotificationWithTitle:@"Headphones Connected" body:@"Volume Restored."];
+}
+
 - (void)showNotificationWithTitle:(NSString *)title
                              body:(NSString *)body
 {

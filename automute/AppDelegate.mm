@@ -20,6 +20,7 @@
 @property(nonatomic, strong) StartAtLoginController *startAtLoginController;
 @property(nonatomic) BOOL isMutingDisabled;
 @property(nonatomic, strong) MJSystemEventObserver *systemEventObserver;
+@property(nonatomic, strong) NSMutableDictionary<NSNumber *, NSNumber *> *savedVolumes;
 @end
 
 @implementation AppDelegate
@@ -31,6 +32,7 @@
     BOOL didLaunchAtLogin = [self checkAndClearDidLaunchAtLogin];
 
     self.notifier = [[MJNotifier alloc] init];
+    self.savedVolumes = [NSMutableDictionary dictionary];
 
     self.headphonesTracker = new HeadphonesTracker();
     __weak AppDelegate *weakSelf = self;
@@ -87,6 +89,24 @@
     return NO;
 }
 
+- (void)saveAllOutputDeviceVolumes
+{
+    for (const auto& deviceId : AudioUtils::fetchAllOutputDeviceIds()) {
+        Float32 volume = AudioUtils::getVolume(deviceId);
+        self.savedVolumes[@(deviceId)] = @(volume);
+    }
+}
+
+- (void)restoreAllOutputDeviceVolumes
+{
+    for (NSNumber *deviceIdNum in self.savedVolumes) {
+        AudioDeviceID deviceId = deviceIdNum.unsignedIntValue;
+        Float32 volume = self.savedVolumes[deviceIdNum].floatValue;
+        AudioUtils::setVolume(deviceId, volume);
+    }
+    [self.savedVolumes removeAllObjects];
+}
+
 - (BOOL)systemEventsHandler_muteIfAppropriateForEvent:(MJSystemEvent)event
 {
     if ([self doesUserWantMuteOnEvent:event]) {
@@ -117,6 +137,16 @@
     }
 }
 
+- (BOOL)doesUserWantRestoreOnEvent:(MJSystemEvent)event
+{
+    switch (event) {
+        case MJSystemEventNone: return false;
+        case MJSystemEventSleep: return MJUserDefaults.shared.isSetToRestoreOnWake;
+        case MJSystemEventLock: return MJUserDefaults.shared.isSetToRestoreOnUnlock;
+        case MJSystemEventPowerOff: return false;
+    }
+}
+
 - (NSTimeInterval)notificationDelayForEvent:(MJSystemEvent)event
 {
     switch (event) {
@@ -142,10 +172,37 @@
     }
 }
 
+- (void)systemEventsHandler_restoreIfAppropriateForEvent:(MJSystemEvent)event
+{
+    if (![self doesUserWantRestoreOnEvent:event]) return;
+    if (self.savedVolumes.count == 0) return;
+    [self restoreAllOutputDeviceVolumes];
+    [self showRestoreNotificationForEvent:event];
+}
+
+- (void)showRestoreNotificationForEvent:(MJSystemEvent)event
+{
+    __weak AppDelegate *weakSelf = self;
+    int64_t delay = static_cast<int64_t>([self notificationDelayForEvent:event] * NSEC_PER_SEC);
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, delay), dispatch_get_main_queue(), ^{
+        switch (event) {
+            case MJSystemEventNone:
+            case MJSystemEventPowerOff:
+                break;
+            case MJSystemEventSleep:
+                [weakSelf.notifier showWakeRestoreNotification];
+                break;
+            case MJSystemEventLock:
+                [weakSelf.notifier showUnlockRestoreNotification];
+                break;
+        }
+    });
+}
+
 - (void)onDefaultOutputDeviceChangedWithIsHeadphones:(BOOL)isHeadphones followingHeadphonesDisconnect:(BOOL)followingHeadphonesDisconnect
 {
     NSLog(@"Default output device changed [isHeadphones=%d] [followingHeadphonesDisconnect=%d]", isHeadphones, followingHeadphonesDisconnect);
-    
+
     [self.menuBarController updateMenuIcon:isHeadphones];
     if (followingHeadphonesDisconnect && [self menuBarController_isSetToMuteOnHeadphones]) {
         /// - Here lies an OS weirdness: the output device has "officially" changed, but
@@ -166,6 +223,15 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             [weakSelf tryMuteDefaultOutputDeviceWithNumAttempts:30 attemptIntervalyMs:10];
         });
+    }
+    if (isHeadphones && !followingHeadphonesDisconnect && MJUserDefaults.shared.isSetToRestoreOnHeadphones && self.savedVolumes.count > 0) {
+        AudioDeviceID deviceId = AudioUtils::fetchDefaultOutputDeviceId();
+        NSNumber *savedVolume = self.savedVolumes[@(deviceId)];
+        if (savedVolume) {
+            AudioUtils::setVolume(deviceId, savedVolume.floatValue);
+            [self.savedVolumes removeObjectForKey:@(deviceId)];
+            [self.notifier showHeadphonesConnectedRestoreNotification];
+        }
     }
 }
 
@@ -191,7 +257,10 @@
 {
     if (self.isMutingDisabled) return false;
 
-    OSStatus res = AudioUtils::mute(AudioUtils::fetchDefaultOutputDeviceId());
+    AudioDeviceID deviceId = AudioUtils::fetchDefaultOutputDeviceId();
+    Float32 volume = AudioUtils::getVolume(deviceId);
+    self.savedVolumes[@(deviceId)] = @(volume);
+    OSStatus res = AudioUtils::mute(deviceId);
     MJLOG("Mute default output device [res=%d]\n", res);
 
     return true;
@@ -201,6 +270,7 @@
 {
     if (self.isMutingDisabled) return false;
 
+    [self saveAllOutputDeviceVolumes];
     MJLOG("Mute all output devices:\n");
     for (const auto& deviceId : AudioUtils::fetchAllOutputDeviceIds()) {
         OSStatus res = AudioUtils::mute(deviceId);
@@ -290,6 +360,36 @@
     [MJUserDefaults.shared setMenuBarIconHidden:YES];
     [self.menuBarController forceRemoveFromMenuBar];
     self.menuBarController = nil;
+}
+
+- (BOOL)menuBarController_isSetToRestoreOnWake
+{
+    return MJUserDefaults.shared.isSetToRestoreOnWake;
+}
+
+- (void)menuBarController_setRestoreOnWake:(BOOL)restoreOnWake
+{
+    [MJUserDefaults.shared setRestoreOnWake:restoreOnWake];
+}
+
+- (BOOL)menuBarController_isSetToRestoreOnUnlock
+{
+    return MJUserDefaults.shared.isSetToRestoreOnUnlock;
+}
+
+- (void)menuBarController_setRestoreOnUnlock:(BOOL)restoreOnUnlock
+{
+    [MJUserDefaults.shared setRestoreOnUnlock:restoreOnUnlock];
+}
+
+- (BOOL)menuBarController_isSetToRestoreOnHeadphones
+{
+    return MJUserDefaults.shared.isSetToRestoreOnHeadphones;
+}
+
+- (void)menuBarController_setRestoreOnHeadphones:(BOOL)restoreOnHeadphones
+{
+    [MJUserDefaults.shared setRestoreOnHeadphones:restoreOnHeadphones];
 }
 
 @end

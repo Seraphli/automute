@@ -94,6 +94,7 @@
 
         [self.delegate systemEventsHandler_notifyMutedOnEvent:event];
     }
+    [self.delegate systemEventsHandler_restoreIfAppropriateForEvent:event];
 }
 
 @end

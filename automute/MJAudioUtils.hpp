@@ -25,6 +25,8 @@ public:
     static void listenToDevicesChanges(VoidBlock callback);
 
     static OSStatus mute(AudioDeviceID deviceId);
+    static Float32 getVolume(AudioDeviceID deviceId);
+    static OSStatus setVolume(AudioDeviceID deviceId, Float32 volume);
 
 private:
     static void listenToSystemChange(AudioObjectPropertyAddress propertyAddress, VoidBlock block);

@@ -116,6 +116,29 @@ OSStatus AudioUtils::mute(AudioDeviceID deviceId)
     return AudioObjectSetPropertyData(deviceId, &propertyAddress, 0, nullptr, sizeof(mute), &mute);
 }
 
+Float32 AudioUtils::getVolume(AudioDeviceID deviceId)
+{
+    AudioObjectPropertyAddress propertyAddress = {
+        kAudioDevicePropertyVolumeScalar,
+        kAudioObjectPropertyScopeOutput,
+        kAudioObjectPropertyElementMaster
+    };
+    Float32 volume = 0.0;
+    UInt32 dataSize = sizeof(Float32);
+    AudioObjectGetPropertyData(deviceId, &propertyAddress, 0, NULL, &dataSize, &volume);
+    return volume;
+}
+
+OSStatus AudioUtils::setVolume(AudioDeviceID deviceId, Float32 volume)
+{
+    AudioObjectPropertyAddress propertyAddress = {
+        kAudioDevicePropertyVolumeScalar,
+        kAudioObjectPropertyScopeOutput,
+        kAudioObjectPropertyElementMaster
+    };
+    return AudioObjectSetPropertyData(deviceId, &propertyAddress, 0, nullptr, sizeof(volume), &volume);
+}
+
 void AudioUtils::listenToSystemChange(AudioObjectPropertyAddress propertyAddress, VoidBlock block)
 {
     auto onChangeBlock = ^(UInt32 inNumberAddresses, const AudioObjectPropertyAddress *inAddresses) {

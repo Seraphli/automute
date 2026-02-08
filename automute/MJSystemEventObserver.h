@@ -12,6 +12,7 @@ typedef NS_ENUM(NSInteger, MJSystemEvent) {
 @protocol MJSystemEventHandlerDelegate
 - (BOOL)systemEventsHandler_muteIfAppropriateForEvent:(MJSystemEvent)event;
 - (void)systemEventsHandler_notifyMutedOnEvent:(MJSystemEvent)event;
+- (void)systemEventsHandler_restoreIfAppropriateForEvent:(MJSystemEvent)event;
 @end
 
 @interface MJSystemEventObserver : NSObject

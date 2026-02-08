@@ -6,4 +6,8 @@
 - (void)showSleepMuteNotification;
 - (void)showLockMuteNotification;
 
+- (void)showWakeRestoreNotification;
+- (void)showUnlockRestoreNotification;
+- (void)showHeadphonesConnectedRestoreNotification;
+
 @end
