@@ -75,6 +75,7 @@
 - (void)saveAllOutputDeviceVolumes
 {
     for (const auto& deviceId : AudioUtils::fetchAllOutputDeviceIds()) {
+        if (self.savedVolumes[@(deviceId)]) continue;
         Float32 volume = AudioUtils::getVolume(deviceId);
         self.savedVolumes[@(deviceId)] = @(volume);
     }
@@ -232,8 +233,10 @@
     if (self.isMutingDisabled) return false;
 
     AudioDeviceID deviceId = AudioUtils::fetchDefaultOutputDeviceId();
-    Float32 volume = AudioUtils::getVolume(deviceId);
-    self.savedVolumes[@(deviceId)] = @(volume);
+    if (!self.savedVolumes[@(deviceId)]) {
+        Float32 volume = AudioUtils::getVolume(deviceId);
+        self.savedVolumes[@(deviceId)] = @(volume);
+    }
     OSStatus res = AudioUtils::mute(deviceId);
     MJLOG("Mute default output device [res=%d]\n", res);
 
