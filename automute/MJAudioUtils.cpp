@@ -116,6 +116,17 @@ OSStatus AudioUtils::mute(AudioDeviceID deviceId)
     return AudioObjectSetPropertyData(deviceId, &propertyAddress, 0, nullptr, sizeof(mute), &mute);
 }
 
+OSStatus AudioUtils::unmute(AudioDeviceID deviceId)
+{
+    AudioObjectPropertyAddress propertyAddress = {
+        kAudioDevicePropertyMute,
+        kAudioObjectPropertyScopeOutput,
+        kAudioObjectPropertyElementMaster
+    };
+    UInt32 mute = 0;
+    return AudioObjectSetPropertyData(deviceId, &propertyAddress, 0, nullptr, sizeof(mute), &mute);
+}
+
 Float32 AudioUtils::getVolume(AudioDeviceID deviceId)
 {
     AudioObjectPropertyAddress propertyAddress = {

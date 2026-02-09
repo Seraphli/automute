@@ -86,6 +86,7 @@
     for (NSNumber *deviceIdNum in self.savedVolumes) {
         AudioDeviceID deviceId = deviceIdNum.unsignedIntValue;
         Float32 volume = self.savedVolumes[deviceIdNum].floatValue;
+        AudioUtils::unmute(deviceId);
         AudioUtils::setVolume(deviceId, volume);
     }
     [self.savedVolumes removeAllObjects];
