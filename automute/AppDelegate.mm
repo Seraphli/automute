@@ -4,7 +4,6 @@
 #import "MJUserDefaults.h"
 #import "MJDisableMuteManager.h"
 #import "StartAtLoginController.h"
-#import "MJConstants.h"
 #import "MJNotifier.h"
 #import "MJSystemEventObserver.h"
 #import "MJAudioUtils.hpp"
@@ -29,8 +28,6 @@
 {
 //    [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:[[NSBundle mainBundle] bundleIdentifier]];
 
-    BOOL didLaunchAtLogin = [self checkAndClearDidLaunchAtLogin];
-
     self.notifier = [[MJNotifier alloc] init];
     self.savedVolumes = [NSMutableDictionary dictionary];
 
@@ -40,17 +37,11 @@
         [weakSelf onDefaultOutputDeviceChangedWithIsHeadphones:headphonesConnected followingHeadphonesDisconnect:followingHeadphonesDisconnect];
     });
 
-    /// If the app was launched by the user (rather than auto launch
-    ///  on login) -> force show the menu bar icon.
-    if (!didLaunchAtLogin) {
-        [MJUserDefaults.shared setMenuBarIconHidden:NO];
-    }
-
     self.menuBarController = MJUserDefaults.shared.isMenuBarIconHidden
             ? nil
             : [self buildMenuBarController];
     self.disableMuteManager = [[MJDisableMuteManager alloc] initWithDelegate:self];
-    self.startAtLoginController = [[StartAtLoginController alloc] initWithIdentifier:MJ_HELPER_BUNDLE_ID];
+    self.startAtLoginController = [[StartAtLoginController alloc] init];
     self.systemEventObserver = [[MJSystemEventObserver alloc] initWithDelegate:self];
 
     if (!MJUserDefaults.shared.didSeeWelcomeScreen) {
@@ -68,14 +59,6 @@
                                      headphonesConnected:self.headphonesTracker->isDefaultOutputDeviceHeadphones()];
 }
 
-- (BOOL)checkAndClearDidLaunchAtLogin
-{
-    NSUserDefaults *groupDefaults = [[NSUserDefaults alloc] initWithSuiteName:MJ_SHARED_GROUP_ID];
-    BOOL didLaunchAtLogin = [groupDefaults boolForKey:MJ_DID_LAUNCH_AT_LOGIN_KEY];
-    [groupDefaults setBool:NO forKey:MJ_DID_LAUNCH_AT_LOGIN_KEY];
-    [groupDefaults synchronize];
-    return didLaunchAtLogin;
-}
 
 - (BOOL)applicationShouldHandleReopen:(NSApplication *)sender hasVisibleWindows:(BOOL)flag
 {
@@ -224,15 +207,6 @@
             [weakSelf tryMuteDefaultOutputDeviceWithNumAttempts:30 attemptIntervalyMs:10];
         });
     }
-    if (isHeadphones && !followingHeadphonesDisconnect && MJUserDefaults.shared.isSetToRestoreOnHeadphones && self.savedVolumes.count > 0) {
-        AudioDeviceID deviceId = AudioUtils::fetchDefaultOutputDeviceId();
-        NSNumber *savedVolume = self.savedVolumes[@(deviceId)];
-        if (savedVolume) {
-            AudioUtils::setVolume(deviceId, savedVolume.floatValue);
-            [self.savedVolumes removeObjectForKey:@(deviceId)];
-            [self.notifier showHeadphonesConnectedRestoreNotification];
-        }
-    }
 }
 
 - (void)tryMuteDefaultOutputDeviceWithNumAttempts:(int)attemptsLeft attemptIntervalyMs:(int64_t)intervalMs
@@ -380,16 +354,6 @@
 - (void)menuBarController_setRestoreOnUnlock:(BOOL)restoreOnUnlock
 {
     [MJUserDefaults.shared setRestoreOnUnlock:restoreOnUnlock];
-}
-
-- (BOOL)menuBarController_isSetToRestoreOnHeadphones
-{
-    return MJUserDefaults.shared.isSetToRestoreOnHeadphones;
-}
-
-- (void)menuBarController_setRestoreOnHeadphones:(BOOL)restoreOnHeadphones
-{
-    [MJUserDefaults.shared setRestoreOnHeadphones:restoreOnHeadphones];
 }
 
 @end

@@ -42,11 +42,6 @@
     [self showNotificationWithTitle:@"Unlocked" body:@"Volume Restored."];
 }
 
-- (void)showHeadphonesConnectedRestoreNotification
-{
-    [self showNotificationWithTitle:@"Headphones Connected" body:@"Volume Restored."];
-}
-
 - (void)showNotificationWithTitle:(NSString *)title
                              body:(NSString *)body
 {

@@ -36,6 +36,4 @@
 - (void)setRestoreOnWake:(BOOL)restoreOnWake;
 - (BOOL)isSetToRestoreOnUnlock;
 - (void)setRestoreOnUnlock:(BOOL)restoreOnUnlock;
-- (BOOL)isSetToRestoreOnHeadphones;
-- (void)setRestoreOnHeadphones:(BOOL)restoreOnHeadphones;
 @end

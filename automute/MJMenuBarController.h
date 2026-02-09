@@ -19,8 +19,6 @@
 - (void)menuBarController_setRestoreOnWake:(BOOL)restoreOnWake;
 - (BOOL)menuBarController_isSetToRestoreOnUnlock;
 - (void)menuBarController_setRestoreOnUnlock:(BOOL)restoreOnUnlock;
-- (BOOL)menuBarController_isSetToRestoreOnHeadphones;
-- (void)menuBarController_setRestoreOnHeadphones:(BOOL)restoreOnHeadphones;
 @end
 
 

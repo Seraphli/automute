@@ -12,7 +12,6 @@ static NSString *const MUTE_NOTIFICATIONS_ENABLED = @"MUTE_NOTIFICATIONS_ENABLED
 static NSString *const MENU_BAR_ICON_HIDDEN = @"MENU_BAR_ICON_HIDDEN";
 static NSString *const RESTORE_ON_WAKE = @"RESTORE_ON_WAKE";
 static NSString *const RESTORE_ON_UNLOCK = @"RESTORE_ON_UNLOCK";
-static NSString *const RESTORE_ON_HEADPHONES = @"RESTORE_ON_HEADPHONES";
 
 @interface MJUserDefaults ()
 @property(nonatomic, strong) NSUserDefaults *defaults;
@@ -43,7 +42,6 @@ static NSString *const RESTORE_ON_HEADPHONES = @"RESTORE_ON_HEADPHONES";
             MENU_BAR_ICON_HIDDEN: @(NO),
             RESTORE_ON_WAKE: @(NO),
             RESTORE_ON_UNLOCK: @(NO),
-            RESTORE_ON_HEADPHONES: @(NO),
     }];
 
 
@@ -168,17 +166,6 @@ static NSString *const RESTORE_ON_HEADPHONES = @"RESTORE_ON_HEADPHONES";
 - (void)setRestoreOnUnlock:(BOOL)restoreOnUnlock
 {
     [self.defaults setBool:restoreOnUnlock forKey:RESTORE_ON_UNLOCK];
-    [self.defaults synchronize];
-}
-
-- (BOOL)isSetToRestoreOnHeadphones
-{
-    return [self.defaults boolForKey:RESTORE_ON_HEADPHONES];
-}
-
-- (void)setRestoreOnHeadphones:(BOOL)restoreOnHeadphones
-{
-    [self.defaults setBool:restoreOnHeadphones forKey:RESTORE_ON_HEADPHONES];
     [self.defaults synchronize];
 }
 

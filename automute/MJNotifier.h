@@ -8,6 +8,5 @@
 
 - (void)showWakeRestoreNotification;
 - (void)showUnlockRestoreNotification;
-- (void)showHeadphonesConnectedRestoreNotification;
 
 @end
